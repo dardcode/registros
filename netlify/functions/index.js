@@ -1,20 +1,18 @@
-const express = require('express');
-const app = express();
-const serverless = require('serverless-http');
-const path = require('path');
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../views'));
-
-app.get('/', (req, res) => {
-    const datos = {
-        nombre: 'Juan',
-        frutas: ['manzana', 'banana', 'pera']
-    };
-    res.render('index', datos);
-});
-
-// Servir archivos estáticos desde la carpeta 'public'
-app.use(express.static(path.join(__dirname, '../public')));
-
-module.exports.handler = serverless(app);
+// Docs on event and context https://docs.netlify.com/functions/build/#code-your-function-2
+const handler = async (event) => {
+    try {
+      const subject = event.queryStringParameters.name || 'World'
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: `Hello ${subject}` }),
+        // // more keys you can return:
+        // headers: { "headerName": "headerValue", ... },
+        // isBase64Encoded: true,
+      }
+    } catch (error) {
+      return { statusCode: 500, body: error.toString() }
+    }
+  }
+  
+  module.exports = { handler }
+  
